@@ -1,32 +1,36 @@
-import sys, time
-import socket, threading
+import socket
 
-class web:
-    def __init__ (self):
-        self.port_starting = int(input("Enter port to start search"))
-        self.port_ending = int(input("Enter port upto search"))
-        self.s = socket.socket()
-        self.ip = socket.gethostbyname()
 
-    def port_scanner(s, ip, port_starting, port_ending, r=1):
-        open_ports = []
-        for j in range(port_starting, port_ending):
-            port = port+j
-            print(port)
-        def check_ports():
-            try:
-                s.socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.settimeout(1)
-                r = s.connect_ex((ip, port))
-                if r == 0:
-                    con = f"Port{port} is open"
-                    print(con)
-                s.close()
+def port_scanner():
+    target = input("Enter target hostname/IP: ").strip()
+    start_port = int(input("Enter starting port: "))
+    end_port = int(input("Enter ending port: "))
 
-            except Exception as e:
-                pass
+    try:
+        ip = socket.gethostbyname(target)
+    except socket.gaierror:
+        print("[!] Could not resolve target.")
+        return
 
-        for i in range(port_starting, port_ending):
-            thread = threading.Thread(target=check_ports(ip, port))
-            
-    
+    print(f"\n[+] Scanning {target} ({ip})")
+    print(f"[+] Ports: {start_port}-{end_port}\n")
+
+    open_ports = []
+
+    for port in range(start_port, end_port + 1):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)
+
+        result = sock.connect_ex((ip, port))
+        sock.close()
+
+        if result == 0:
+            print(f"[+] Port {port} is OPEN")
+            open_ports.append(port)
+
+    print("\n[+] Scan complete.")
+
+    if not open_ports:
+        print("[-] No open ports found.")
+    else:
+        print(f"[+] Open ports: {open_ports}")

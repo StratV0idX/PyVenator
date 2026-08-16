@@ -1,3 +1,5 @@
+from web import port_scanner
+
 banner = r"""
 +===============================================================================================+
 
@@ -95,6 +97,11 @@ def show_menu():
         print(f"{number}. {scanner}")
 
     print("0. exit")
+
+def tool_opener(category, scanner_choice):
+    if category == 1 and scanner_choice == 1:
+        port_scanner()
+
 
 def main():
     while True:
