@@ -1,10 +1,21 @@
 import socket
+import time
 
 
 def port_scanner():
     target = input("Enter target hostname/IP: ").strip()
-    start_port = int(input("Enter starting port: "))
-    end_port = int(input("Enter ending port: "))
+
+    try:
+        start_port = int(input("Enter starting port: "))
+        end_port = int(input("Enter ending port: "))
+    except ValueError:
+        print("[!] Ports must be numbers.")
+        return
+
+    if start_port < 1 or end_port > 65535 or start_port > end_port:
+        print("[!] Invalid port range.")
+        return
+
     name = {
         20: "FTP (File Transfer Protocol)",
         21: "FTP (File Transfer Protocol)",
@@ -24,32 +35,113 @@ def port_scanner():
         445: "SMB (Server Message Block)",
         3389: "RDP (Remote Desktop Protocol)"
     }
-    
+
     try:
         ip = socket.gethostbyname(target)
     except socket.gaierror:
         print("[!] Could not resolve target.")
         return
 
+    total_ports = end_port - start_port + 1
+    open_ports = []
+
+    start_time = time.time()
+
     print(f"\n[+] Scanning {target} ({ip})")
     print(f"[+] Ports: {start_port}-{end_port}\n")
 
-    open_ports = []
+    for index, port in enumerate(
+        range(start_port, end_port + 1),
+        start=1
+    ):
+        sock = socket.socket(
+            socket.AF_INET,
+            socket.SOCK_STREAM
+        )
 
-    for port in range(start_port, end_port + 1):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(0.7)
 
-        result = sock.connect_ex((ip, port))
-        sock.close()
+        try:
+            result = sock.connect_ex((ip, port))
+        except socket.error:
+            result = 1
+        finally:
+            sock.close()
 
         if result == 0:
-            print(f"[+] Port {port} : {name} is OPEN")
+            service = name.get(port, "Unknown Service")
+
+            print(
+                f"\n[+] Port {port:<5} : "
+                f"{service} is OPEN"
+            )
+
             open_ports.append(port)
 
-    print("\n[+] Scan complete.")
+        # -----------------------------
+        # Progress calculation
+        # -----------------------------
+
+        elapsed = time.time() - start_time
+
+        percentage = (
+            index / total_ports
+        ) * 100
+
+        if elapsed > 0:
+            scan_rate = index / elapsed
+            remaining_ports = total_ports - index
+            eta = remaining_ports / scan_rate
+        else:
+            eta = 0
+
+        bar_length = 30
+
+        completed = int(
+            bar_length * index / total_ports
+        )
+
+        progress = (
+            "#" * completed
+            + "." * (bar_length - completed)
+        )
+
+        print(
+            f"\r[ + ] process:"
+            f"{progress} "
+            f"{percentage:6.2f}% "
+            f"| elapsed: {elapsed:6.1f}s "
+            f"| ETA: {eta:6.1f}s "
+            f"| open: {len(open_ports)}",
+            end="",
+            flush=True
+        )
+
+    print("\n")
+
+    elapsed = time.time() - start_time
+
+    print("=" * 70)
+    print("[+] Scan complete")
+    print(f"[+] Target       : {target}")
+    print(f"[+] IP           : {ip}")
+    print(f"[+] Ports scanned: {total_ports}")
+    print(f"[+] Open ports   : {len(open_ports)}")
+    print(f"[+] Time         : {elapsed:.2f}s")
+    print("=" * 70)
 
     if not open_ports:
         print("[-] No open ports found.")
     else:
-        print(f"[+] Open ports: {open_ports}")
+        print("\n[+] Open ports:")
+
+        for port in open_ports:
+            service = name.get(
+                port,
+                "Unknown Service"
+            )
+
+            print(
+                f"    [OPEN] {port:<5} "
+                f"{service}"
+            )
