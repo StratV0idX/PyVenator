@@ -72,6 +72,20 @@ scanners = {
     },
 }
 
+def show_scanner(category):
+    print(f"\n[{category.upper()} SCANNERS]\n")
+
+    category_scanners = scanners.get(category, {})
+
+    if not category_scanners:
+        print("No scanners available.")
+        return
+
+    for number, scanner in category_scanners.items():
+        print(f"{number}. {scanner}")
+
+    print("0. Return")
+    
 def show_menu():
     print(banner)
 
@@ -107,15 +121,25 @@ def main():
             input("Press Enter to continue...")
             continue
 
-        print(f"\n[+] Selected category: {category}")
+        while True:
+            show_scanner(category)
 
-        web_scanners = [...]
-        # api_scanners = [...]
-        #
-        show_scanner(category)
+            scanner_choice = input("\n> ").strip()
 
-        input("\nPress Enter to return to the menu...")
+            if scanner_choice == "0":
+                break
 
+            try:
+                scanner = scanners[category][int(scanner_choice)]
+            except (ValueError, KeyError):
+                print("\n[!] Invalid scanner.")
+                input("Press Enter to continue...")
+                continue
+
+            print(f"\n[+] Selected: {scanner}")
+
+            # Run the selected scanner here.
+            input("\nPress Enter to continue...")
 
 if __name__ == "__main__":
     main()
