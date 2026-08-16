@@ -3,11 +3,43 @@ import time
 
 
 def port_scanner():
+
+    port_common = {20, 21, 22, 23, 25, 53, 67, 68, 
+                        69, 80, 110, 123, 143, 443, 445, 
+                        587, 993, 995, 1433, 3306, 3389}
+
+    name = {
+            20: "FTP (File Transfer Protocol)",
+            21: "FTP (File Transfer Protocol)",
+            22: "SSH (Secure Shell)",
+            23: "Telnet",
+            25: "SMTP (Simple Mail Transfer Protocol)",
+            53: "DNS (Domain Name System)",
+            67: "DHCP (Dynamic Host Configuration Protocol)",
+            68: "DHCP (Dynamic Host Configuration Protocol)",
+            80: "HTTP (Hypertext Transfer Protocol)",
+            110: "POP3 (Post Office Protocol version 3)",
+            123: "NTP (Network Time Protocol)",
+            143: "IMAP (Internet Message Access Protocol)",
+            161: "SNMP (Simple Network Management Protocol)",
+            162: "SNMP (Simple Network Management Protocol)",
+            443: "HTTPS (Hypertext Transfer Protocol Secure)",
+            445: "SMB (Server Message Block)",
+            1433: "Microsoft SQL Server",
+            3306: "MySQL Database",
+            3389: "RDP (Remote Desktop Protocol)"
+        }
+    
     target = input("Enter target hostname/IP: ").strip()
 
     try:
-        start_port = int(input("Enter starting port: "))
-        end_port = int(input("Enter ending port: "))
+        port_choice = (input("Do you want to search only common port ?  [Y/n]")).strip().lower()
+        if port_choice == ("y", "yes"):
+            ports = sorted(port_common)
+            print("[+] Scanning common ports only.")
+        elif port_choice == ("n", "no", ""):
+            start_port = int(input("Enter starting port: "))
+            end_port = int(input("Enter ending port: "))
     except ValueError:
         print("[!] Ports must be numbers.")
         return
@@ -15,26 +47,6 @@ def port_scanner():
     if start_port < 0 or end_port > 65535 or start_port > end_port:
         print("[!] Invalid port range.")
         return
-
-    name = {
-        20: "FTP (File Transfer Protocol)",
-        21: "FTP (File Transfer Protocol)",
-        22: "SSH (Secure Shell)",
-        23: "Telnet",
-        25: "SMTP (Simple Mail Transfer Protocol)",
-        53: "DNS (Domain Name System)",
-        67: "DHCP (Dynamic Host Configuration Protocol)",
-        68: "DHCP (Dynamic Host Configuration Protocol)",
-        80: "HTTP (Hypertext Transfer Protocol)",
-        110: "POP3 (Post Office Protocol version 3)",
-        123: "NTP (Network Time Protocol)",
-        143: "IMAP (Internet Message Access Protocol)",
-        161: "SNMP (Simple Network Management Protocol)",
-        162: "SNMP (Simple Network Management Protocol)",
-        443: "HTTPS (Hypertext Transfer Protocol Secure)",
-        445: "SMB (Server Message Block)",
-        3389: "RDP (Remote Desktop Protocol)"
-    }
 
     try:
         ip = socket.gethostbyname(target)
