@@ -67,7 +67,7 @@ def port_scanner():
     start_time = time.time()
 
     print(f"\n[+] Scanning {target} ({ip})")
-    print(f"[+] Ports: {start_port}-{end_port}\n")
+    print(f"[+] Ports: {ports}\n")
 
     for index, port in enumerate(
         ports,
@@ -78,7 +78,7 @@ def port_scanner():
             socket.SOCK_STREAM
         )
 
-        sock.settimeout(0.7)
+        sock.settimeout(1)
 
         try:
             result = sock.connect_ex((ip, port))
