@@ -31,30 +31,36 @@ def port_scanner():
         }
     
     target = input("Enter target hostname/IP: ").strip()
+    port_choice = (input("Do you want to search only common port ?  [Y/n]")).strip().lower()
+    if port_choice == ("y", "yes"):
+                ports = sorted(port_common)
+                print("[+] Scanning common ports only.")
 
-    try:
-        port_choice = (input("Do you want to search only common port ?  [Y/n]")).strip().lower()
-        if port_choice == ("y", "yes"):
-            ports = sorted(port_common)
-            print("[+] Scanning common ports only.")
-        elif port_choice == ("n", "no", ""):
+    elif port_choice == ("n", "no", ""):
+        try:
             start_port = int(input("Enter starting port: "))
             end_port = int(input("Enter ending port: "))
-    except ValueError:
-        print("[!] Ports must be numbers.")
-        return
 
-    if start_port < 0 or end_port > 65535 or start_port > end_port:
-        print("[!] Invalid port range.")
-        return
+            if start_port < 0 or end_port > 65535 or start_port > end_port:
+                print("[!] Invalid port range.")
+                return
+        
+            ports = range(start_port, end_port)
 
+        except ValueError:
+                    print("[!] Ports must be numbers.")
+                    return
+    else:
+        print("[!] Please enter Y or n.")
+        return
+    
     try:
         ip = socket.gethostbyname(target)
     except socket.gaierror:
         print("[!] Could not resolve target.")
         return
 
-    total_ports = end_port - start_port + 1
+    total_ports = len(ports)
     open_ports = []
 
     start_time = time.time()
@@ -63,7 +69,7 @@ def port_scanner():
     print(f"[+] Ports: {start_port}-{end_port}\n")
 
     for index, port in enumerate(
-        range(start_port, end_port + 1),
+        ports,
         start=1
     ):
         sock = socket.socket(
