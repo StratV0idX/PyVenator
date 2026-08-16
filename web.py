@@ -71,8 +71,12 @@ def port_scanner():
         if result == 0:
             service = name.get(port, "Unknown Service")
 
+            # Clear the current progress line
+            print("\r\033[K", end="")
+
+            # Print the discovered port
             print(
-                f"\n[+] Port {port:<5} : "
+                f"[+] Port {port:<5}: "
                 f"{service} is OPEN"
             )
 
@@ -106,9 +110,10 @@ def port_scanner():
             + "." * (bar_length - completed)
         )
 
+        # Draw ONE progress line
         print(
-            f"\r[ + ] process:"
-            f"{progress} "
+            f"\r\033[K"
+            f"[ + ] process:{progress} "
             f"{percentage:6.2f}% "
             f"| elapsed: {elapsed:6.1f}s "
             f"| ETA: {eta:6.1f}s "
@@ -116,7 +121,7 @@ def port_scanner():
             end="",
             flush=True
         )
-
+        
     print("\n")
 
     elapsed = time.time() - start_time
