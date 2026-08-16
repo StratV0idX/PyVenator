@@ -12,6 +12,7 @@ banner = r"""
 
 +===============================================================================================+
 """
+print(banner)
 
 categories = {
     1: "web",
@@ -87,22 +88,13 @@ def show_scanner(category):
     print("0. Return")
     
 def show_menu():
-    print(banner)
 
     print("Select a vulnerability scanner category:\n")
 
-    for number, category in categories.items():
-        print(f"{number}. {category}")
+    for number, scanner in categories.items():
+        print(f"{number}. {scanner}")
 
     print("0. exit")
-
-def show_scanner():
-    print("Select what to run:\n")
-
-    for number, categories in categories_web.items():
-        print(f"{number}. {categories}")
-
-    print("0. Return")
 
 def main():
     while True:
