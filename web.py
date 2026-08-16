@@ -31,12 +31,12 @@ def port_scanner():
         }
     
     target = input("Enter target hostname/IP: ").strip()
-    port_choice = (input("Do you want to search only common port ?  [Y/n]")).strip().lower()
-    if port_choice == ("y", "yes"):
-                ports = sorted(port_common)
-                print("[+] Scanning common ports only.")
+    port_choice = input("Do you want to search only common port ?  [Y/n]").strip().lower()
+    if port_choice in ('y', 'yes'):
+        ports = sorted(port_common)
+        print("[+] Scanning common ports only.")
 
-    elif port_choice == ("n", "no", ""):
+    elif port_choice in ("n", "no", ""):
         try:
             start_port = int(input("Enter starting port: "))
             end_port = int(input("Enter ending port: "))
@@ -52,6 +52,7 @@ def port_scanner():
                     return
     else:
         print("[!] Please enter Y or n.")
+        print(port_choice)
         return
     
     try:
