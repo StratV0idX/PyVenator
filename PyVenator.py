@@ -99,7 +99,7 @@ def show_menu():
     print("0. exit")
 
 def tool_opener(category, scanner_choice):
-    if category == 1 and scanner_choice == 1:
+    if category == "web" and scanner_choice == 1:
         port_scanner()
 
 
@@ -137,7 +137,8 @@ def main():
 
             print(f"\n[+] Selected: {scanner}")
 
-            # Run the selected scanner here.
+            tool_opener(category, int(scanner_choice))
+            
             input("\nPress Enter to continue...")
 
 if __name__ == "__main__":
