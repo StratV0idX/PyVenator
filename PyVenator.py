@@ -26,6 +26,51 @@ categories = {
     10: "dependency",
 }
 
+scanners = {
+    "web": {
+        1: "Port_Scanner",
+        2: "Web_Crawler",
+        3: "Header_Scanner",
+    },
+
+    "api": {
+        1: "API_Endpoint_Scanner",
+        2: "API_Configuration_Checker",
+    },
+
+    "network": {
+        1: "Service_Enumerator",
+        2: "Network_Configuration_Checker",
+    },
+
+    "cms": {
+        1: "CMS_Enumerator",
+    },
+
+    "dns": {
+        1: "DNS_Configuration_Checker",
+    },
+
+    "ssl_tls": {
+        1: "TLS_Configuration_Checker",
+    },
+
+    "cloud": {
+        1: "Cloud_Configuration_Checker",
+    },
+
+    "container": {
+        1: "Container_Configuration_Checker",
+    },
+
+    "source_code": {
+        1: "SAST_Scanner",
+    },
+
+    "dependency": {
+        1: "Dependency_Vulnerability_Checker",
+    },
+}
 
 def show_menu():
     print(banner)
@@ -37,6 +82,13 @@ def show_menu():
 
     print("0. exit")
 
+def show_scanner():
+    print("Select what to run:\n")
+
+    for number, categories in categories_web.items():
+        print(f"{number}. {categories}")
+
+    print("0. Return")
 
 def main():
     while True:
@@ -57,15 +109,10 @@ def main():
 
         print(f"\n[+] Selected category: {category}")
 
-        # This is where you can load the scanners
-        # belonging to that category.
-        #
-        # Example:
-        #
-        # web_scanners = [...]
+        web_scanners = [...]
         # api_scanners = [...]
         #
-        # show_scanners(category)
+        show_scanner(category)
 
         input("\nPress Enter to return to the menu...")
 
