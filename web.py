@@ -12,7 +12,7 @@ def port_scanner():
         print("[!] Ports must be numbers.")
         return
 
-    if start_port < 1 or end_port > 65535 or start_port > end_port:
+    if start_port < 0 or end_port > 65535 or start_port > end_port:
         print("[!] Invalid port range.")
         return
 
